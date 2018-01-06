@@ -4,12 +4,16 @@ let cards = ["dog", "cat", "mouse", "fish", "bird", "snake", "lizard", "spider",
 let moves = 0;
 // For tracking clicks.
 let clicks = 0;
-// For keeping track if the first click ID.
+// For keeping track if the first click target.
 let firstClick = null;
-// Tracking all successful clicks.
-let successfulClicks = [];
-//Get the list of cards in memory.
+// keeping track of IDs
+let firstId, eventId = 0;
+// Get the list of cards in memory.
 let dispCards = document.querySelectorAll(".card");
+// success revelations;
+let goodMatches = [];
+// keep the element with the tries to be displayed.
+let tries = document.querySelector("#tries");
 
 // Shuffle the cards to randomize them. Found on Stackoverflow
 let shuffleCards = function (array) {
@@ -21,42 +25,62 @@ let shuffleCards = function (array) {
   }
 };
 
+// Function for checking for a win.
+let checkWin = function() {
+  if (goodMatches.length === 16 ) {
+    // A win.
+    removeBoard();
+    displayWin();
+  }
+}
+
+//Remove the game board.
+let removeBoard = function () {
+  let gameBoard = document.querySelector('#gameArea');
+  gameBoard.remove();
+}
+
+//Create the Win screen.
+let displayWin = function () {
+  let tempDisplay = document.createDocumentFragment();
+  let winTitle = document.createElement('h1');
+  winTitle.textContent = "You've won";
+  tempDisplay.append(winTitle);
+  document.body.append(tempDisplay);
+}
+
 // Function for click event.
 let clickCard = function (evt) {
-  let cardId = evt.target.getAttribute('id');
-  if (!successfulClicks.includes(cardId)) {
+  eventId = evt.target.getAttribute('id');
+  if (!goodMatches.includes(eventId)) {
     if (clicks === 0 ) {
-      firstClick = cardId;
-      dispCards[cardId].textContent = cards[cardId];
-      clicks++;
+      firstClick = evt.target;
+      firstId = firstClick.getAttribute('id');
+      firstClick.textContent = cards[firstId];
+      clicks++
     } else if ( clicks === 1 ) {
-      clicks++;
-      if (cardId != firstClick) {
-        clicks = 0;
-        dispCards[cardId].textContent = cards[cardId];
-        setTimeout(function () {
-          if (dispCards[firstClick].textContent !== dispCards[cardId].textContent) {
-            dispCards[firstClick].textContent = '';
-            dispCards[cardId].textContent = '';
+      if ( firstId != eventId ) {
+        clicks++
+        evt.target.textContent = cards[eventId];
+        setTimeout(function() {
+          if ( firstClick.textContent === evt.target.textContent) {
+            goodMatches.push(firstId, eventId);
+            checkWin();
           } else {
-            successfulClicks.push(firstClick);
-            successfulClicks.push(cardId);
-            if (successfulClicks.length === 16) {
-              console.log("you won");
-            }
+            firstClick.textContent = '';
+            evt.target.textContent = '';
           }
+          clicks = 0;
+          moves++;
+          tries.textContent = moves;
         }, 1000);
-        moves++;
-        console.log(moves);
-      } else if ( cardId === firstClick ) {
-        click--;
       }
     }
   }
 };
 
 shuffleCards(cards);
-
+tries.textContent = moves;
 for (let i = 0; i < dispCards.length; i++ ) {
   dispCards[i].addEventListener('click', clickCard);
 };
