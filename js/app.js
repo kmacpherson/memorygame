@@ -9,11 +9,13 @@ let firstClick = null;
 // keeping track of IDs
 let firstId, eventId = 0;
 // Get the list of cards in memory.
-let dispCards = document.querySelectorAll(".card");
+let dispCards = document.getElementsByClassName("card");
 // success revelations;
-let goodMatches = [];
+let goodMatches = 0;
 // keep the element with the tries to be displayed.
-let tries = document.querySelector("#tries");
+let tries = document.getElementById("tries");
+// Kepp track of clicked elements.
+let clickedElements = [];
 
 // Shuffle the cards to randomize them. Found on Stackoverflow
 let shuffleCards = function (array) {
@@ -25,14 +27,36 @@ let shuffleCards = function (array) {
   }
 };
 
+// Puts text elements in place. Makes it easy to cheat but will have to figure this out after.
+let placeText = function (array) {
+  for ( let i = 0; i < array.length; i++) {
+    let textElement = dispCards[i].firstChild;
+    textElement.textContent = array[i];
+  }
+}
+
+// Checks to see if it is a match.
+let isMatch = function () {
+  tries.textContent = ++moves;
+  let first = clickedElements.pop();
+  let second = clickedElements.pop();
+  if (first.textContent === second.textContent) {
+    goodMatches++;
+    checkWin();
+  } else {
+    first.classList.toggle("hidden");
+    second.classList.toggle("hidden");
+  }
+};
+
 // Function for checking for a win.
 let checkWin = function() {
-  if (goodMatches.length === 16 ) {
+  if (goodMatches === 8 ) {
     // A win.
     removeBoard();
     displayWin();
   }
-}
+};
 
 //Remove the game board.
 let removeBoard = function () {
@@ -44,6 +68,7 @@ let removeBoard = function () {
 let displayWin = function () {
   let tempDisplay = document.createDocumentFragment();
   let winTitle = document.createElement('h1');
+  winTitle.classList.add("tigersBlood");
   winTitle.textContent = "You've won";
   tempDisplay.append(winTitle);
   document.body.append(tempDisplay);
@@ -51,35 +76,18 @@ let displayWin = function () {
 
 // Function for click event.
 let clickCard = function (evt) {
-  eventId = evt.target.getAttribute('id');
-  if (!goodMatches.includes(eventId)) {
-    if (clicks === 0 ) {
-      firstClick = evt.target;
-      firstId = firstClick.getAttribute('id');
-      firstClick.textContent = cards[firstId];
-      clicks++
-    } else if ( clicks === 1 ) {
-      if ( firstId != eventId ) {
-        clicks++
-        evt.target.textContent = cards[eventId];
-        setTimeout(function() {
-          if ( firstClick.textContent === evt.target.textContent) {
-            goodMatches.push(firstId, eventId);
-            checkWin();
-          } else {
-            firstClick.textContent = '';
-            evt.target.textContent = '';
-          }
-          clicks = 0;
-          moves++;
-          tries.textContent = moves;
-        }, 1000);
-      }
+  let textElement = evt.target.firstChild;
+  if (textElement.classList.contains("hidden") && clickedElements.length < 2) {
+    textElement.classList.toggle("hidden");
+    clickedElements.push(textElement);
+    if (clickedElements.length === 2) {
+      setTimeout(isMatch, 1000);
     }
   }
 };
 
 shuffleCards(cards);
+placeText(cards);
 tries.textContent = moves;
 for (let i = 0; i < dispCards.length; i++ ) {
   dispCards[i].addEventListener('click', clickCard);

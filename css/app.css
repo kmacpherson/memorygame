@@ -1,0 +1,50 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#gameTitle {
+  width: 100%;
+  text-align: center;
+}
+
+.tigersBlood {
+  width: 100%;
+  text-align: center;
+}
+
+#score {
+  width: 60%;
+  margin: 0 auto;
+}
+
+#gameArea {
+  width: 800px;
+  height: 800px;
+  margin: 0 auto;
+  background: linear-gradient(70deg, red, blue);
+  display: flex;
+  flex-wrap: wrap;
+  align-content: space-around;
+  justify-content: space-around;
+  border-radius: 2%;
+  box-shadow: 5px 15px 5px 5px grey;
+}
+
+.card {
+  width: 180px;
+  height: 180px;
+  line-height: 180px;
+  background-color: teal;
+  border-radius: 5%;
+}
+
+.text {
+  text-align: center;
+  color: white;
+  font-size: 3em;
+}
+
+.hidden {
+  visibility: hidden;
+}
