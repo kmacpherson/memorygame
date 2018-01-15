@@ -26,6 +26,8 @@ let timeElement = document.getElementById("time");
 let winBoard = document.getElementById("winArea");
 // Tracking game board.
 let gameBoard = document.querySelector('#gameArea');
+// Tracking game board.
+let infoPane = document.querySelector('#infoPane');
 
 // Shuffle the cards to randomize them. Found on Stackoverflow
 let shuffleCards = function (array) {
@@ -42,7 +44,9 @@ let placeText = function (array) {
   for ( let i = 0; i < array.length; i++) {
     let textElement = dispCards[i].firstChild;
     textElement.textContent = array[i];
-    textElement.classList.toggle("hidden");
+    if (!textElement.classList.contains("hidden")) {
+      textElement.classList.toggle("hidden");
+    }
   }
 };
 
@@ -69,6 +73,13 @@ let checkWin = function() {
     clearInterval(gameTimer);
     gameBoard.classList.toggle("hidden");
     winBoard.classList.toggle("hidden");
+    infoPane.classList.toggle("hidden");
+    let winTries = document.getElementById("winTries");
+    let winTime = document.getElementById("winTime");
+    let winStars = document.getElementById("winStars");
+    winTries.textContent = moves;
+    winTime.textContent = timeElement.textContent;
+    winStars.textContent = gameStars.textContent
   }
 };
 
@@ -105,12 +116,19 @@ let setupGame = function () {
     dispCards[i].addEventListener('click', clickCard);
   };
   gameTimer = setInterval(updateTime, 1000);
-  let winButton = document.getElementById("winButton");
-  winButton.addEventListener('click', resetGame);
+  let winButton = document.getElementsByClassName('winButton');
+  for (let i = 0; i < winButton.length; i++ ) {
+    winButton[i].addEventListener('click', resetGame);
+  };
+
 };
 
 let resetGame = function () {
-  winBoard.classList.toggle("hidden");
+  if (goodMatches === 8) {
+    winBoard.classList.toggle("hidden");
+    gameBoard.classList.toggle("hidden");
+    infoPane.classList.toggle("hidden");
+  }
   moves = 0;
   clickedElements = [];
   timeEllapsed = 0;
@@ -121,7 +139,7 @@ let resetGame = function () {
   shuffleCards(cards);
   placeText(cards);
   gameTimer = setInterval(updateTime, 1000);
-  gameBoard.classList.toggle("hidden");
+
 };
 
 // Function for click event.

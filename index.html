@@ -9,13 +9,17 @@
 <body>
   <header class="header">
     <h1 id="gameTitle">Memory Game</h1>
-    <p class="gameInfo">Attempts: <span id="tries"></span></p>
-    <p class="gameInfo">Time: <span id="time"></span> seconds</p>
-    <p class="gameInfo">Stars: <span id="stars"></span></p>
+    <div id="infoPane">
+      <p class="gameInfo">Attempts: <span id="tries"></span></p>
+      <p class="gameInfo">Time: <span id="time"></span> seconds</p>
+      <p class="gameInfo">Stars: <span id="stars"></span></p>
+      <button class="winButton">Restart Game</button>
+    </div>
   </header>
   <div id="winArea" class="hidden">
     <h1>You've Won!!</h1>
-    <button name="winButton" id="winButton">Play Again!</button>
+    <p>Congratulations. You've won the game. You took <span id="winTries"></span> tries, <span id="winTime"></span> seconds to win and are awarded the following stars <span id="winStars"></span>.</p>
+    <button class="winButton">Play Again!</button>
   </div>
   <div id="gameArea">
     <div class="card"><div class="text"></div></div>
